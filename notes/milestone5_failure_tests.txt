@@ -1,0 +1,68 @@
+Milestone 5 Failure Mode Tests
+
+Date: June 15, 2026
+
+1. search_listings no results
+
+Command:
+python -c "from tools import search_listings; print(search_listings('designer ballgown', size='XXS', max_price=5))"
+
+Output:
+[]
+
+Result:
+Passed. The tool returned an empty list without raising an exception. This confirms search_listings handles no-match queries safely.
+
+
+2. Full agent no-results branch
+
+Command:
+python -c "from agent import run_agent; from utils.data_loader import get_example_wardrobe; s = run_agent('designer ballgown size XXS under $5', get_example_wardrobe()); print('error:', s['error']); print('selected_item:', s['selected_item']); print('outfit_suggestion:', s['outfit_suggestion']); print('fit_card:', s['fit_card'])"
+
+Output:
+error: I couldn't find any listings that matched your search. Try broadening the description, removing the size filter, or increasing the max price.
+selected_item: None
+outfit_suggestion: None
+fit_card: None
+
+Result:
+Passed. The agent returned a helpful error message, left selected_item as None, left outfit_suggestion as None, and left fit_card as None. This confirms the planning loop stops early when search_listings returns no results and does not call suggest_outfit or create_fit_card with empty search data.
+
+
+3. suggest_outfit empty wardrobe
+
+Command:
+python -c "from tools import search_listings, suggest_outfit; from utils.data_loader import get_empty_wardrobe; results = search_listings('vintage graphic tee', size=None, max_price=50); print(suggest_outfit(results[0], get_empty_wardrobe()))"
+
+Output:
+Congratulations on your new thrifted graphic tee. This 2003 Tour Bootleg Style tee is a great find, and I'm excited to help you style it. Given its grunge and streetwear inspiration, here's how you can create a cohesive look:
+
+Bottoms:
+To balance the slightly boxy fit of the tee, consider pairing it with skinny jeans, distressed denim, or black joggers/leggings.
+
+Layers:
+To add depth and texture, try layering with a denim jacket, leather jacket, cardigan, or hoodie.
+
+Shoes:
+Choose shoes that match the laid-back streetwear vibe, such as Converse, Vans, Dr. Martens, or skate shoes.
+
+Accessories:
+Keep accessories simple so the graphic tee stays the focal point. A simple chain, minimalist watch, baseball cap, beanie, backpack, or tote bag would work.
+
+Vibe:
+This outfit suits a casual everyday look with grunge and streetwear flair.
+
+Result:
+Passed. The tool returned useful general styling advice instead of crashing or returning an empty string. This confirms suggest_outfit handles an empty wardrobe gracefully.
+
+
+4. create_fit_card empty outfit
+
+Command:
+python -c "from tools import search_listings, create_fit_card; results = search_listings('vintage graphic tee', size=None, max_price=50); print(create_fit_card('', results[0]))"
+
+Output:
+I need an outfit suggestion before I can create a fit card.
+
+Result:
+Passed. The tool returned a clear descriptive error message instead of raising an exception. This confirms create_fit_card handles missing outfit input safely.
