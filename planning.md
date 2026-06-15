@@ -200,32 +200,32 @@ For each tool, describe the specific failure mode you're handling and what the a
      the planning loop and each individual tool. -->
 ```mermaid
 flowchart TD
-    A[User query] --> B[Planning Loop]
+    A["User query"] --> B["Planning Loop"]
 
-    B --> C[Parse query into description, size, max_price]
-    C --> D[Store in session parsed, query, wardrobe]
+    B --> C["Parse query into description, size, max_price"]
+    C --> D["Store query, wardrobe, and parsed inputs in session"]
 
-    D --> E[search_listings description, size, max_price]
-    E --> F{Any search results?}
+    D --> E["Call search_listings(description, size, max_price)"]
+    E --> F{"Any search results?"}
 
-    F -- No --> G[Set session error: no listings found]
-    G --> H[Return session early]
-    H --> Z[User sees helpful retry suggestion]
+    F -- "No" --> G["Set session error: no listings found"]
+    G --> H["Return session early"]
+    H --> Z["User sees helpful retry suggestion"]
 
-    F -- Yes --> I[Store session search_results]
-    I --> J[Select search_results[0]]
-    J --> K[Store session selected_item]
+    F -- "Yes" --> I["Store results in session search_results"]
+    I --> J["Select first search result as best match"]
+    J --> K["Store selected item in session"]
 
-    K --> L[suggest_outfit selected_item, wardrobe]
-    L --> M[Store session outfit_suggestion]
-    M --> N[Tool returns styling text or fallback if wardrobe empty]
+    K --> L["Call suggest_outfit(selected_item, wardrobe)"]
+    L --> M["Store outfit suggestion in session"]
+    M --> N["Tool returns styling text or fallback if wardrobe is empty"]
 
-    N --> O[create_fit_card outfit_suggestion, selected_item]
-    O --> P[Store session fit_card]
-    P --> Q[Tool returns caption or error/fallback string]
+    N --> O["Call create_fit_card(outfit_suggestion, selected_item)"]
+    O --> P["Store fit card in session"]
+    P --> Q["Tool returns caption or error/fallback string"]
 
-    Q --> R[Return complete session]
-    R --> S[User sees selected item, outfit suggestion, and fit card]
+    Q --> R["Return complete session"]
+    R --> S["User sees selected item, outfit suggestion, and fit card"]
 ```
 
 ---
