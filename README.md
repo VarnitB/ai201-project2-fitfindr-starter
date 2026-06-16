@@ -206,7 +206,7 @@ LLM tests assert type and non-empty output only — not exact wording — so the
 
 ## 10. Demo Video
 
-Demo video: [link to be added]
+Demo video: https://youtu.be/rHnzEnTHVX8 
 
 ---
 
